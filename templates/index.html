@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Net Hole Detector - Mockup</title>
+    <style>
+      body { font-family: Arial, sans-serif; padding: 20px; }
+      .preview { margin-top: 20px; }
+      img { max-width: 100%; height: auto; border: 1px solid #ccc; }
+    </style>
+  </head>
+  <body>
+    <h2>Net Hole Detector — Local Mockup</h2>
+    <form action="/detect" method="post" enctype="multipart/form-data">
+      <label>Select image: <input type="file" name="image" accept="image/*" required></label>
+      <button type="submit">Detect Holes</button>
+    </form>
+
+    {% if error %}
+      <div style="color: red">{{ error }}</div>
+    {% endif %}
+
+    {% if annotated_image %}
+      <div class="preview">
+        <h3>Detections: {{ count }}</h3>
+        <img src="{{ annotated_image }}" alt="Annotated">
+      </div>
+    {% endif %}
+  </body>
+</html>

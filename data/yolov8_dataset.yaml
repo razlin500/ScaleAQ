@@ -1,0 +1,5 @@
+names:
+- hole
+path: data/yolo
+train: images/train
+val: images/val
