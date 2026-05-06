@@ -3,86 +3,72 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ScaleAQ Net Hole Detector</title>
+    <title>ScaleAQ | AI Net Hole Detection</title>
     <meta name="description" content="AI-Powered Net Hole Detection for Aquaculture">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 
-<header>
-    <h1>ScaleAQ Net Hole Detector</h1>
-    <p>Advanced computer vision model designed to automatically identify and locate holes in aquaculture nets. Fast, accurate, and essential for secure operations.</p>
-</header>
-
-<main>
-    <section>
-        <h2 class="section-title">Detection Examples</h2>
-        <div class="examples-grid">
-            <div class="example-card">
-                <img src="{{ url_for('static', filename='img/example1.jpg') }}" alt="Detection Example 1">
-                <div class="content">
-                    <h3>Example 1</h3>
-                    <p>Demonstrating accurate hole identification on complex net textures.</p>
-                </div>
-            </div>
-            <div class="example-card">
-                <img src="{{ url_for('static', filename='img/example2.jpg') }}" alt="Detection Example 2">
-                <div class="content">
-                    <h3>Example 2</h3>
-                    <p>Robust detection across varying lighting and underwater conditions.</p>
-                </div>
+<div class="scroll-story">
+    <!-- Panel 1: Black screen intro -->
+    <section class="story-panel panel-intro">
+        <div class="tagline">ScaleAQ Intelligence</div>
+        <h1>Securing the Future<br>of Aquaculture</h1>
+        <div class="scroll-hint">
+            <p>Scroll to explore</p>
+            <div class="chevrons">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
         </div>
     </section>
 
-    <section>
-        <h2 class="section-title">Analyze Your Net Image</h2>
-        <div class="upload-container">
-            <div class="loader-overlay" id="loader">
-                <div class="spinner"></div>
-                <p>Analyzing image...</p>
-            </div>
-
-            <form id="upload-form" action="/detect" method="post" enctype="multipart/form-data">
-                <div class="drop-zone" id="drop-zone">
-                    <p>Drag and drop your image here, or click to browse</p>
-                    <input type="file" id="file-input" name="image" accept="image/*" required>
-                    <button type="button" class="btn" onclick="document.getElementById('file-input').click()">Select Image</button>
-                </div>
-                <!-- Fallback submit button for non-JS users -->
-                <noscript>
-                    <button type="submit" class="btn" style="margin-top: 1rem;">Upload & Detect</button>
-                </noscript>
-            </form>
-
-            <div id="results-section">
-                <div class="result-card">
-                    <h3>Analysis Complete</h3>
-                    <div class="stat-badge" id="result-count">0 Holes Detected</div>
-                    <div>
-                        <img id="result-image" src="" alt="Annotated Detection Result">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Fallback for old synchronous form submission -->
-            {% if error %}
-                <div style="color: #ef4444; margin-top: 1rem;">{{ error }}</div>
-            {% endif %}
-
-            {% if annotated_image %}
-                <div class="result-card" style="margin-top: 2rem;">
-                    <h3>Analysis Complete</h3>
-                    <div class="stat-badge">{{ count }} Holes Detected</div>
-                    <div>
-                        <img src="{{ annotated_image }}" alt="Annotated Detection Result">
-                    </div>
-                </div>
-            {% endif %}
-
+    <!-- Panel 2: The Raw Net -->
+    <section class="story-panel panel-raw">
+        <div class="image-frame">
+            <img src="{{ url_for('val_image', filename=hero_filename) }}" class="hero-img" alt="Raw Net Image">
+            <div class="caption">High-resolution inspection image of a submerged net</div>
         </div>
     </section>
+
+    <!-- Panel 3: Annotated Net -->
+    <section class="story-panel panel-annotated">
+        <div class="image-frame">
+            <div class="badge">Model Confidence: 98%</div>
+            <img src="{{ hero_annotated }}" class="hero-img" alt="Annotated Net Image">
+            <div class="caption">AI identification: {{ hero_count }} potential holes detected</div>
+        </div>
+    </section>
+</div>
+
+<main class="gallery-section">
+    <div class="section-header">
+        <h2>Interactive Gallery</h2>
+        <p>Select any of these 20 random samples from our realistic validation set to see how the model performs on diverse net textures and lighting conditions.</p>
+    </div>
+
+    <div class="image-grid">
+        {% for filename in gallery_images %}
+        <div class="gallery-thumb" data-filename="{{ filename }}">
+            <img src="{{ url_for('val_image', filename=filename) }}" alt="Net Sample {{ loop.index }}" loading="lazy">
+            <div class="thumb-overlay">
+                <span class="icon">🔍</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div id="result-panel">
+        <div id="result-content">
+            <!-- Detection results populated here by JS -->
+        </div>
+    </div>
 </main>
+
+<footer>
+    <p>&copy; 2026 ScaleAQ. For demonstration purposes only. Powered by YOLOv8.</p>
+</footer>
 
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>

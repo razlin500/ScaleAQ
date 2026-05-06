@@ -1,89 +1,73 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const dropZone = document.getElementById('drop-zone');
-    const fileInput = document.getElementById('file-input');
-    const uploadForm = document.getElementById('upload-form');
-    const loader = document.getElementById('loader');
-    const resultsSection = document.getElementById('results-section');
-    const resultImage = document.getElementById('result-image');
-    const resultCount = document.getElementById('result-count');
 
-    // Handle Drag & Drop
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        dropZone.addEventListener(eventName, preventDefaults, false);
-    });
+    // ============================================================
+    // SCROLLYTELLING: reveal panels on scroll
+    // ============================================================
+    const storyPanels = document.querySelectorAll('.panel-raw, .panel-annotated');
 
-    function preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-
-    ['dragenter', 'dragover'].forEach(eventName => {
-        dropZone.addEventListener(eventName, () => {
-            dropZone.classList.add('dragover');
-        }, false);
-    });
-
-    ['dragleave', 'drop'].forEach(eventName => {
-        dropZone.addEventListener(eventName, () => {
-            dropZone.classList.remove('dragover');
-        }, false);
-    });
-
-    dropZone.addEventListener('drop', (e) => {
-        const dt = e.dataTransfer;
-        const files = dt.files;
-        if (files.length) {
-            fileInput.files = files;
-            handleUpload(files[0]);
-        }
-    });
-
-    fileInput.addEventListener('change', function() {
-        if (this.files.length) {
-            handleUpload(this.files[0]);
-        }
-    });
-
-    function handleUpload(file) {
-        if (!file.type.startsWith('image/')) {
-            alert('Please select an image file.');
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('image', file);
-
-        // Show Loader
-        loader.style.display = 'flex';
-        resultsSection.style.display = 'none';
-
-        fetch('/api/detect', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
             }
-            return response.json();
-        })
-        .then(data => {
-            if (data.error) {
-                alert(data.error);
-            } else {
-                resultImage.src = data.annotated_image;
-                resultCount.textContent = `${data.count} Holes Detected`;
-                resultsSection.style.display = 'block';
-                // Scroll to results
-                resultsSection.scrollIntoView({ behavior: 'smooth' });
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred during detection.');
-        })
-        .finally(() => {
-            loader.style.display = 'none';
         });
-    }
+    }, {
+        threshold: 0.3,
+    });
+
+    storyPanels.forEach(panel => observer.observe(panel));
+
+    // ============================================================
+    // GALLERY: click to detect
+    // ============================================================
+    const thumbs = document.querySelectorAll('.gallery-thumb');
+    const resultPanel = document.getElementById('result-panel');
+    const resultContent = document.getElementById('result-content');
+
+    thumbs.forEach(thumb => {
+        thumb.addEventListener('click', () => {
+            const filename = thumb.dataset.filename;
+
+            // Highlight selected
+            thumbs.forEach(t => t.classList.remove('selected'));
+            thumb.classList.add('selected');
+
+            // Show loading spinner
+            resultPanel.style.display = 'block';
+            resultContent.innerHTML = `
+                <div class="loader-container">
+                    <div class="spinner"></div>
+                    <p>Analyzing net image…</p>
+                </div>`;
+            resultPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            fetch('/api/detect_path', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ filename: filename }),
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('Detection failed');
+                return res.json();
+            })
+            .then(data => {
+                if (data.error) throw new Error(data.error);
+                const holeWord = data.count === 1 ? 'Hole' : 'Holes';
+                resultContent.innerHTML = `
+                    <div class="result-card">
+                        <h3>${filename}</h3>
+                        <div class="stat-badge">${data.count} ${holeWord} Detected</div>
+                        <div>
+                            <img src="${data.annotated_image}" alt="Detection result for ${filename}">
+                        </div>
+                    </div>`;
+            })
+            .catch(err => {
+                resultContent.innerHTML = `
+                    <div class="result-card">
+                        <p style="color:#ef4444;">Error: ${err.message}</p>
+                    </div>`;
+            });
+        });
+    });
 });
