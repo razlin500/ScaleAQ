@@ -1,31 +1,89 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Net Hole Detector - Mockup</title>
-    <style>
-      body { font-family: Arial, sans-serif; padding: 20px; }
-      .preview { margin-top: 20px; }
-      img { max-width: 100%; height: auto; border: 1px solid #ccc; }
-    </style>
-  </head>
-  <body>
-    <h2>Net Hole Detector — Local Mockup</h2>
-    <form action="/detect" method="post" enctype="multipart/form-data">
-      <label>Select image: <input type="file" name="image" accept="image/*" required></label>
-      <button type="submit">Detect Holes</button>
-    </form>
+    <title>ScaleAQ Net Hole Detector</title>
+    <meta name="description" content="AI-Powered Net Hole Detection for Aquaculture">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
 
-    {% if error %}
-      <div style="color: red">{{ error }}</div>
-    {% endif %}
+<header>
+    <h1>ScaleAQ Net Hole Detector</h1>
+    <p>Advanced computer vision model designed to automatically identify and locate holes in aquaculture nets. Fast, accurate, and essential for secure operations.</p>
+</header>
 
-    {% if annotated_image %}
-      <div class="preview">
-        <h3>Detections: {{ count }}</h3>
-        <img src="{{ annotated_image }}" alt="Annotated">
-      </div>
-    {% endif %}
-  </body>
+<main>
+    <section>
+        <h2 class="section-title">Detection Examples</h2>
+        <div class="examples-grid">
+            <div class="example-card">
+                <img src="{{ url_for('static', filename='img/example1.jpg') }}" alt="Detection Example 1">
+                <div class="content">
+                    <h3>Example 1</h3>
+                    <p>Demonstrating accurate hole identification on complex net textures.</p>
+                </div>
+            </div>
+            <div class="example-card">
+                <img src="{{ url_for('static', filename='img/example2.jpg') }}" alt="Detection Example 2">
+                <div class="content">
+                    <h3>Example 2</h3>
+                    <p>Robust detection across varying lighting and underwater conditions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-title">Analyze Your Net Image</h2>
+        <div class="upload-container">
+            <div class="loader-overlay" id="loader">
+                <div class="spinner"></div>
+                <p>Analyzing image...</p>
+            </div>
+
+            <form id="upload-form" action="/detect" method="post" enctype="multipart/form-data">
+                <div class="drop-zone" id="drop-zone">
+                    <p>Drag and drop your image here, or click to browse</p>
+                    <input type="file" id="file-input" name="image" accept="image/*" required>
+                    <button type="button" class="btn" onclick="document.getElementById('file-input').click()">Select Image</button>
+                </div>
+                <!-- Fallback submit button for non-JS users -->
+                <noscript>
+                    <button type="submit" class="btn" style="margin-top: 1rem;">Upload & Detect</button>
+                </noscript>
+            </form>
+
+            <div id="results-section">
+                <div class="result-card">
+                    <h3>Analysis Complete</h3>
+                    <div class="stat-badge" id="result-count">0 Holes Detected</div>
+                    <div>
+                        <img id="result-image" src="" alt="Annotated Detection Result">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fallback for old synchronous form submission -->
+            {% if error %}
+                <div style="color: #ef4444; margin-top: 1rem;">{{ error }}</div>
+            {% endif %}
+
+            {% if annotated_image %}
+                <div class="result-card" style="margin-top: 2rem;">
+                    <h3>Analysis Complete</h3>
+                    <div class="stat-badge">{{ count }} Holes Detected</div>
+                    <div>
+                        <img src="{{ annotated_image }}" alt="Annotated Detection Result">
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
+    </section>
+</main>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
 </html>

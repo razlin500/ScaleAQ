@@ -1,8 +1,8 @@
 import os
 from ultralytics import YOLO
 
-DATA_YAML = 'data/yolov8_dataset.yaml'
-EPOCHS = 20
+DATA_YAML = 'data_realistic/dataset.yaml'
+EPOCHS = 50
 
 def main():
     if not os.path.exists(DATA_YAML):

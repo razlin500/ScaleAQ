@@ -4,8 +4,8 @@ from ultralytics import YOLO
 
 
 def main():
-    weights = os.path.join('runs', 'detect', 'train', 'weights', 'best.pt')
-    val_images = sorted(glob(os.path.join('data', 'yolo', 'images', 'val', '*.png')))
+    weights = os.path.join('runs', 'detect', 'train-3', 'weights', 'best.pt')
+    val_images = sorted(glob(os.path.join('data_realistic', 'images', 'val', '*.png')))
 
     if not os.path.exists(weights):
         raise SystemExit(f'Missing weights: {weights}')

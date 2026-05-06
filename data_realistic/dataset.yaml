@@ -1,0 +1,5 @@
+names:
+- hole
+path: C:/Users/razli/ikke_onedrive/V2026/ScaleAQ/data_realistic
+train: images/train
+val: images/val
