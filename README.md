@@ -1,29 +1,31 @@
-# Net Hole Detection Mockup
+# Net Hole Detection
 
 This project is a local proof-of-concept for detecting holes in fish-farm nets.
 Because there was no suitable real-world dataset available, the repo first generates
-synthetic training images with a simple grid-like net pattern and circular holes.
-Those annotations are converted into YOLO format and used to train a lightweight
-YOLOv8 model. A small Flask app then provides a browser-based interface for
-uploading images and viewing detections.
+realistic synthetic training images featuring various net colors (green, black, turquoise, blue)
+over simulated concrete floor backgrounds, complete with circular holes.
+Those generated annotations are output directly into YOLO format and used to train a lightweight
+YOLOv8 model. A modern Flask app then provides a professional, browser-based interface for
+uploading images, viewing galleries of examples, and performing real-time hole detection analysis.
 
 ## What it does
 
-- Generates synthetic net images with randomly placed circular holes.
-- Converts the synthetic annotations into YOLO labels.
+- Generates realistic synthetic net images with different colors, backgrounds, and randomly placed circular holes.
+- Automatically creates corresponding YOLO label annotations.
 - Trains a local YOLOv8 model using Ultralytics.
-- Serves a simple Flask GUI to upload an image and view annotated detections.
+- Serves a modern, interactive Flask GUI with a sleek design to upload an image and view annotated detections in real-time.
 - Runs entirely on a local machine; no cloud service is required.
 
 ## Project structure
 
-- `generate_dataset.py` - creates the synthetic images and bounding-box annotations.
-- `convert_annotations.py` - converts the annotations into YOLO format.
+- `generate_dataset.py` - creates the realistic synthetic images and YOLO bounding-box annotations.
 - `train_yolo.py` - trains a YOLOv8 model on the generated dataset.
 - `eval_yolo.py` - runs inference on held-out validation images.
-- `app.py` - Flask mockup that loads the trained model and shows detections in the browser.
-- `data/` - generated images, labels, and dataset metadata.
+- `app.py` - Flask app that loads the trained model and serves the modern front-end for detections in the browser.
+- `detector.py` - core logic for loading the model and predicting bounding boxes.
+- `data_realistic/` - generated images, labels, and dataset metadata.
 - `runs/` - YOLO training and evaluation outputs.
+- `static/` & `templates/` - frontend assets (CSS, JS, HTML) for the modern web interface.
 
 ## Setup
 
@@ -43,12 +45,6 @@ Generate synthetic data:
 python generate_dataset.py
 ```
 
-Convert annotations to YOLO format:
-
-```powershell
-python convert_annotations.py
-```
-
 Train the model:
 
 ```powershell
@@ -61,16 +57,16 @@ Run a quick evaluation:
 python eval_yolo.py
 ```
 
-Start the Flask mockup:
+Start the application:
 
 ```powershell
 python app.py
 ```
 
-Then open http://127.0.0.1:5000/ in your browser and upload one of the generated images from `data/images`.
+Then open http://127.0.0.1:5000/ in your browser to access the web UI, explore the gallery, and upload images to test the detection model.
 
 ## Notes
 
 - The dataset is synthetic and intended for proof-of-concept only.
 - The model is trained locally with Ultralytics YOLOv8.
-- The app is intentionally minimal so it is easy to test, modify, and extend.
+- The web app is designed to be interactive and visually appealing, demonstrating how a production UI might look and function.

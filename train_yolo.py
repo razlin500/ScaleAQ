@@ -6,7 +6,7 @@ EPOCHS = 50
 
 def main():
     if not os.path.exists(DATA_YAML):
-        raise SystemExit(f"Dataset YAML not found: {DATA_YAML}. Run convert_annotations.py first.")
+        raise SystemExit(f"Dataset YAML not found: {DATA_YAML}. Run generate_dataset.py first.")
 
     # Use yolov8n small model for quick experiments
     model = YOLO('yolov8n.pt')
